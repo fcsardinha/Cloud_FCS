@@ -101,8 +101,6 @@ st.markdown("---")
 
 # --- CRIAÇÃO DAS ABAS TEMÁTICAS (TABS) ---
 
-st.subheader(f"Exibindo dados para: {municipio_selecionado} ({ano_selecionado})")
-
 # Nomeando as abas temáticas
 tab1, tab2, tab3, tab4, tab5 = st.tabs([
     "📊 Etapas de Ensino",
@@ -116,38 +114,113 @@ tab1, tab2, tab3, tab4, tab5 = st.tabs([
 
 with tab1:
     st.markdown("#### Docentes por Etapa de Ensino")
-  
+    df_etapas = dfs["etapas"]
+
     # Definindo containers dentro da aba
 
     # --- REQUISITO 1: Tabela Descritiva ---
     c1 = st.container(border=True)
     c1.markdown("1. Análise Descritiva da Base de Dados")
-    tabela_descritiva = dfs["etapas"].describe()
+    tabela_descritiva = df_etapas.describe()
     c1.write(tabela_descritiva)
  
     # Definindo espaçamento entre os containers
     st.write("")
 
+    # --- REQUISITO 2: Gráfico de Barras ---
     c2 = st.container(border=True)
-    c2.write("Conteúdo dentro do container 2")
+    c2.markdown("2. Gráfico de Docentes por Etapa de Ensino")
+    c2.markdown("O gráfico abaixo mostra o total de docentes em cada etapa de ensino para todo o estado, de acordo com o ano selecionado.")
 
+    # Adicionando um filtro simples para o usuário poder escolher o ano
+    ano_selecionado = c2.selectbox(
+        "Selecione o Ano para visualizar no gráfico:",
+        options=sorted(df_etapas['Ano'].unique(), reverse=True)
+    )
+
+    # Filtramos os dados pelo ano que o usuário escolheu
+    df_filtrado_ano = df_etapas[df_etapas['Ano'] == ano_selecionado]
+
+    # Selecionando apenas as colunas que representam as etapas de ensino
+    colunas_etapas = ['Creche', 'Pré-Escola', 'EF - Anos Iniciais', 'EF - Anos Finais', 'EM Propedêutico', 'EM Integrado']
+    
+    # Somando o total de docentes para cada etapa
+    total_por_etapa = df_filtrado_ano[colunas_etapas].sum()
+
+    # Criando espaçamento entre o filtro e o gráfico
+    c2.write("")
+
+    # Usando o bar_chart(), como sugerido
+    c2.bar_chart(total_por_etapa)
+    
+    c2.info("Este gráfico mostra a soma de todos os municípios para o ano selecionado.")
+
+
+# --- ABA 2: FAIXA ETÁRIA E SEXO ---
 with tab2:
-    st.header("Docentes por gênero e faixa etária, segundo o município")
-    st.write("Conteúdo da aba 2")
+    st.markdown("#### Docentes por Faixa Etária e Sexo")
+    df_idade = dfs["idade"]
 
+    # Definindo containers dentro da aba
+
+    # --- REQUISITO 1: Tabela Descritiva ---
+    c3 = st.container(border=True)
+    c3.markdown("1. Análise Descritiva da Base de Dados")
+    tabela_descritiva = df_idade.describe()
+    c3.write(tabela_descritiva)
+ 
+    # Definindo espaçamento entre os containers
+    st.write("")
+
+# --- ABA 3: NÍVEL DE FORMAÇÃO ---
 with tab3:
-    st.header("Docentes por nível de escolaridade e formação acadêmica, segundo o município")
-    st.write("Conteúdo da aba 3")
+    st.markdown("#### Docentes por Escolaridade ou Nível de Formação Acadêmica")
+    df_formacao = dfs["formacao"]
 
+    # Definindo containers dentro da aba
+
+    # --- REQUISITO 1: Tabela Descritiva ---
+    c5 = st.container(border=True)
+    c5.markdown("1. Análise Descritiva da Base de Dados")
+    tabela_descritiva = df_formacao.describe()
+    c5.write(tabela_descritiva)
+ 
+    # Definindo espaçamento entre os containers
+    st.write("")
+
+# --- ABA 4: VÍNCULO FUNCIONAL ---
 with tab4:
-    st.header("Docentes por nível de escolaridade e formação acadêmica, segundo o município")
-    st.write("Conteúdo da aba 3")
+    st.markdown("#### Docentes por Vínculo Funcional e Dependência Administrativa")
+    df_vinculo = dfs["vinculo"]
 
+    # Definindo containers dentro da aba
+
+    # --- REQUISITO 1: Tabela Descritiva ---
+    c7 = st.container(border=True)
+    c7.markdown("1. Análise Descritiva da Base de Dados")
+    tabela_descritiva = df_vinculo.describe()
+    c7.write(tabela_descritiva)
+ 
+    # Definindo espaçamento entre os containers
+    st.write("")
+
+# --- ABA 5: DEPENDÊNCIA E LOCALIZAÇÃO ---
 with tab5:
-    st.header("Docentes por situação funcional e dependência administrativa, segundo o município")
-    st.write("Conteúdo da aba 4")
+    st.markdown("#### Docentes por Dependência Administrativa e Localização")
+    df_dependencia = dfs["dependencia"]
+
+    # Definindo containers dentro da aba
+
+    # --- REQUISITO 1: Tabela Descritiva ---
+    c9 = st.container(border=True)
+    c9.markdown("1. Análise Descritiva da Base de Dados")
+    tabela_descritiva = df_dependencia.describe()
+    c9.write(tabela_descritiva)
+ 
+    # Definindo espaçamento entre os containers
+    st.write("")
 
 
 # Rodapé
 st.markdown("---")
-st.write("© 2024 DocentES. Com Dados do Censo Escolar 2024. Todos os direitos reservados.")
+st.write("© 2025 DocentES. Com Dados do Censo Escolar, de 2022 a 2024. Todos os direitos reservados.")
